@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" ng-app="automatApp">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="app.css" rel="stylesheet" media="screen">	
+	<title>Тестовое задание</title>
+  </head>
+  
+	<body ng-controller="MarkListController">
+	
+	<div class = "container">
+		<div class ="row">
+			<div class="col-lg-2 col-md-2">
+				<nav class='{{active}}' ng-click= '$event.preventDefault()'>
+					
+					<div class='row'>
+						<div class = 'col-md-12'>
+							<a href='#' class ='home' ng-click='active="home"'>Главная</a>
+						</div>
+					</div>
+					
+					<div class='row'>
+						<div class = 'col-md-12'>
+							<a href='#' class ='projects' ng-click='active="projects"'>Проекты</a>
+							<div class = 'row' ng-show = 'active == "projects"'>
+								<a href='#' class ='under-menu-1' >Подпункт_1</a>
+								<a href='#' class ='under-menu-2' >Подпункт_2</a>
+								<a href='#' class ='under-menu-3' >Подпункт_3</a>
+							</div>
+						</div>
+					</div>
+						
+					<div class='row'>
+						<div class = 'col-md-12'>
+							<a href='#' class ='services' ng-click='active="services"'>Сервисы</a>
+							<div class = 'row' ng-show = 'active == "services"'>
+								<a href='#' class ='under-menu-1'>Подпункт_1</a>
+								<a href='#' class ='under-menu-2'>Подпункт_2</a>
+								<a href='#' class ='under-menu-3'>Подпункт_3</a>
+							</div>
+
+						</div>
+					</div>
+						
+					<div class='row'>
+						<div class = 'col-md-12'>
+							<a href='#' class ='contacts' ng-click='active="contacts"'>Контакты</a>
+							<div class = 'row' ng-show = 'active == "contacts"'>
+								<div class = 'row'>
+								<a href='#' class ='under-menu-1' >Подпункт_1</a>
+								</div>
+								<div class = 'row'>
+								<a href='#' class ='under-menu-2' >Подпункт_2</a>
+								</div>
+								<div class = 'row'>
+								<a href='#' class ='under-menu-3' >Подпункт_3</a>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				
+				</nav>		
+			</div>
+		
+			<div class="col-lg-8 col-md-8">
+				<h4 align = 'center' >Название предмета:</h4>
+				<input type='text' id='subject' class='form-control' ng-model='subjectName'>
+				<h4 align = 'center' >Посещение:</h4>
+				
+				<div = class = 'row center'>
+					<div class='col-md-4'>
+						<label>Всего занятий:</label>
+						<form class  'css-form' name = 'absenceForm' novalidate>
+								<input type='number' class ='form-control' name='hours' ng-model='hoursVal' min = '{{missedVal}}' required> 
+								<p></p>
+						</form>
+					</div>
+				
+					<div class='col-md-4'>
+						<label>Пропущено:</label>
+						<form name='missedForm'>
+							<input type='number' class ='form-control' name='missed' ng-model='missedVal' min = '{{noExplaneVal}}' max = '{{hoursVal}}' required> 
+						<p></p>
+						</form>
+					</div>
+				
+					<div class='col-md-4'>
+						<label >Без причины:</label>
+						<form name = 'noExplaneForm'>
+							<input type='number' class ='form-control' name='noExplane' ng-model='noExplaneVal' min = '0' max = '{{missedVal}}' required>
+						<p></p>
+						</form>
+					</div>
+					
+
+		 		</div>
+				
+				<div class = 'row'>
+					<div class = 'col-md-12'>
+						<input ng-hide = 'absenceForm.hours.$invalid || missedForm.missed.$invalid || noExplaneForm.noExplane.$invalid' type = 'button' class = 'btn btn-success form-control' ng-click='absCheck()' value = 'Проверить посещение'><p></p>
+						<input ng-show = 'absenceForm.hours.$invalid || missedForm.missed.$invalid || noExplaneForm.noExplane.$invalid' type = 'button' class = 'btn btn-danger form-control disabled' value = 'Введите значения'><p></p>
+						<span>{{result}}</span>
+					</div>
+				</div>
+				
+				<h4 align='center'>Средний бал:</h4>
+				
+				<div class='row center'>
+									
+					<div class='col-md-2'>
+						<div id='marks' >
+							<input type='number' id='mark0' maxlength = 1 size = 1 max = 5 min = 1 class ='form-control'><p></p>
+						</div>
+					</div>
+					
+					<div class='col-md-4'>
+						<input type='button' onclick='addMark()' class='btn btn-success' value='Добавить'>
+						<p></p>
+						<input type='button' onclick='rmMark()' class='btn btn-danger' value='Удалить'>		
+					</div>				
+					
+					<div class='col-md-2'>
+						<span id = 'average'></span>
+					</div>
+					
+					<div class='col-md-4'>
+						<input type='button' onclick='averageCheck()' value='Рассчитать средний бал' class="btn btn-success">
+					</div>
+					
+				</div>
+				
+			</div>
+			
+			<div class="col-lg-2 col-md-2">Навигация 123
+			</div>
+		</div>
+	</div>
+		<script language='javascript'>
+					
+			function averageCheck(){
+				var output = document.querySelector('#average');
+				marksArray = {};
+				var sum = 0;
+				var average = 0;
+				
+				for (var i = 0; i<=counter; i++){
+					marksArray+=Number(document.getElementById('mark'+i).value);
+				}
+				
+				for (i = marksArray.length-1; i>=(marksArray.length-1)-counter; i--){
+					sum += Number(marksArray[i]);
+					average = sum/(counter+1);
+				}
+				
+				output.textContent = parseFloat(average.toFixed(1)) ;
+				console.log(marksArray, 'counter =', counter, 'длина массива =', marksArray.length, 'среднее =', average);
+			};
+						
+		</script>
+		
+		<script src="js/bootstrap.min.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="app.js"></script>
+	</body>
+</html>
